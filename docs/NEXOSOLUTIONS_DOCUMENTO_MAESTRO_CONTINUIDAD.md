@@ -395,3 +395,102 @@ Para evitar que el proveedor genere un gasto ilimitado:
 - **D-015:** Fotografías y videos se almacenarán fuera de Git y, preferentemente, fuera de PostgreSQL, en almacenamiento de medios/objetos con cuotas y costos medibles.
 - **D-016:** Ninguna base gratuita temporal será la única copia de datos de producción; se requieren backups y una prueba de restauración.
 - **D-017:** La cuota de mantenimiento debe cubrir infraestructura, almacenamiento/transferencia y soporte dentro de límites explícitos.
+
+
+## 17. Auditoría integral de estado — Constancia NS-AUD-2026-10-18-01
+
+**Fecha:** 18 de octubre de 2026 (Uruguay).  
+**Alcance:** documento maestro, README, landing, ficha demo independiente, plantillas de venta/alquiler, HEAD de `main`, comparación de commits y despliegue de producción de Netlify.  
+**Método:** inspección de archivos reales y metadatos del proveedor. Esta auditoría no equivale a una prueba manual en un teléfono ni a una prueba física de NFC.
+
+### 17.1 Resultado ejecutivo
+
+**Estado: MVP web demostrativo publicado; todavía NO listo para instalar en un cliente real.**
+
+El repositorio contiene una landing estática, una ficha demo independiente y dos plantillas de fichas. El despliegue de producción de Netlify está en estado `ready` y corresponde al commit `b15eafbda8477cb5af40be03231343efd4ea61f3`, que elimina el QR redundante dentro de la ficha independiente. Se verificó en el contenido de GitHub que esa ficha ya no contiene el bloque QR ni la llamada al servicio externo de generación QR.
+
+Esto acredita que el cambio está publicado según los metadatos de Netlify, pero no demuestra por sí solo que el recorrido se haya probado en navegador o teléfono después del despliegue.
+
+### 17.2 Fuentes inspeccionadas y evidencias
+
+1. Documento maestro en `main`: inspeccionado. La auditoría previa tenía fecha 17 de octubre de 2026 y dejaba pendiente confirmar el deploy más reciente.
+2. `README.md`: inspeccionado. Describe el producto como MVP estático, gestionado manualmente, con piloto pendiente.
+3. `index.html`: inspeccionado. Contiene la landing y una ficha de ejemplo integrada que se muestra/oculta con JavaScript; no navega a una página independiente al pulsar los botones de demo.
+4. `propiedades/casa-demo/index.html`: inspeccionado antes y después de la corrección. Conserva datos y gráficos ficticios, botón de WhatsApp sin número autorizado y URL de propiedad configurada en el código. El bloque QR interno fue eliminado.
+5. `plantillas/venta.html`: inspeccionada. Usa marcadores `{{...}}`, placeholders para fotografías y un enlace WhatsApp con marcadores que requieren sustitución/codificación correctas.
+6. `plantillas/alquiler.html`: inspeccionada. Usa marcadores similares para precio, disponibilidad, condiciones, requisitos, imágenes y WhatsApp.
+7. GitHub: el commit `b15eafbda8477cb5af40be03231343efd4ea61f3` modifica únicamente `propiedades/casa-demo/index.html`; comparación contra `46a0610a6542f22a43ecf27ca20645270400cf57` informa 1 commit por delante, 0 por detrás, 1 archivo modificado.
+8. Netlify: deploy `6ad429032a192082cc330037`, rama `main`, estado `ready`, contexto `production`, commit `b15eafbda8477cb5af40be03231343efd4ea61f3`, sin mensaje de error reportado por el proveedor.
+
+### 17.3 Qué existe, qué funciona y qué está probado
+
+| Elemento | Estado comprobado | Alcance de la evidencia |
+|---|---|---|
+| Repositorio y rama `main` | Existe | Lectura de archivos y metadatos de commits |
+| Landing estática | Existe en el repositorio | Inspección de HTML/CSS/JS; no prueba manual visual en varios dispositivos |
+| Demo integrada | Existe | Cambio de vista gestionado por JavaScript en el mismo documento |
+| Ficha demo independiente | Existe | HTML estático con contenido ficticio |
+| Plantilla de venta | Existe | No es una ficha de cliente lista: requiere reemplazar marcadores |
+| Plantilla de alquiler | Existe | No es una ficha de cliente lista: requiere reemplazar marcadores |
+| Deploy de producción | `ready` | Confirmado en metadatos de Netlify para el commit exacto |
+| QR redundante dentro de la ficha independiente | Eliminado del código actual | Confirmado en el contenido del archivo; no es un QR físico |
+| QR de acceso en una placa | No verificado en esta auditoría | La landing muestra un patrón visual ilustrativo, no un QR de producción |
+| NFC físico | Pendiente | No hay evidencia de etiqueta programada ni prueba física |
+| WhatsApp real de inmobiliaria | Pendiente | No hay número autorizado configurado |
+| Ficha con propiedad real | Pendiente | No se ha suministrado contenido de un cliente ni aprobación |
+| Recorrido extremo a extremo en teléfono | Pendiente de repetir | Hay un antecedente de prueba QR informado previamente por el usuario, pero no se repitió tras el último deploy |
+| Cliente/piloto/ventas | No acreditado | No hay aceptación de cliente ni resultados comerciales en las fuentes inspeccionadas |
+
+### 17.4 Diferencias respecto de la auditoría anterior
+
+- **Resuelto:** se confirmó el despliegue de producción pendiente de la auditoría previa. Netlify publica el commit `b15eafbda8477cb5af40be03231343efd4ea61f3` y lo reporta `ready`.
+- **Resuelto en código:** se eliminó el QR interno redundante de la ficha independiente y se retiró su generador externo.
+- **Sigue abierto:** la landing y la ficha independiente son dos experiencias distintas; la landing contiene una demo interna, y la ficha independiente no se abre desde un enlace de demo explícito que haya sido probado en este ciclo.
+- **Sigue abierto:** el patrón de QR de la landing es ilustrativo y no debe imprimirse ni confundirse con un código funcional.
+- **Sigue abierto:** el botón WhatsApp de la ficha independiente no inicia una consulta real porque no tiene un número autorizado.
+- **Sigue abierto:** las plantillas no son generadores automáticos y conservan marcadores que impiden publicarlas sin personalización.
+- **Sigue abierto:** no hay evidencia nueva de etiqueta NFC física, ficha real, cliente piloto, precios acordados o aceptación comercial.
+
+### 17.5 Riesgos, contradicciones y limitaciones
+
+1. **Riesgo de confundir demo con producto operativo:** la landing enseña el concepto, pero la representación de placa y QR es ilustrativa.
+2. **Riesgo de expectativa incorrecta:** el texto describe una experiencia NFC + QR + WhatsApp completa, aunque NFC y WhatsApp real todavía no han sido probados con datos autorizados.
+3. **Riesgo de publicación manual:** las plantillas pueden publicar marcadores sin sustituir si no se aplica un checklist.
+4. **Riesgo de dependencia de operación:** todavía no se ha demostrado un procedimiento repetible de alta, aprobación, publicación, baja y actualización de una ficha.
+5. **Riesgo comercial:** no se validaron la urgencia del problema, la disposición a pagar ni el mantenimiento recurrente.
+6. **Riesgo operativo/contractual:** falta acordar precio, alcance, tiempos de cambios, autorización de contenido, baja, continuidad de URL y propiedad de placa.
+7. **Limitación de esta auditoría:** se inspeccionó el código y el estado del despliegue mediante conectores; no se ejecutó un navegador automatizado, no se tomó un teléfono para repetir el escaneo, no se compró/programó NFC y no se realizó una transacción real.
+8. **Sin evidencia de regresión de código:** la última modificación reportada se limita al archivo de ficha independiente. Esto no sustituye pruebas funcionales.
+
+### 17.6 Prioridades actualizadas
+
+**P0 — Verificación funcional pública**
+1. Abrir la landing y la ficha independiente desde un navegador real.
+2. Confirmar que los botones de demo llevan a la vista esperada y que se puede regresar a la landing.
+3. Revisar la visualización móvil y escritorio.
+4. Confirmar que la ficha demo identifica inequívocamente todos los datos ficticios y que no hay QR interno.
+5. Documentar resultados como probado/no probado; no inferirlos del estado `ready` del deploy.
+
+**P1 — Preparar un piloto real sin sobredesarrollar**
+1. Crear una ficha de prueba desde una de las plantillas y comprobar que no quedan marcadores.
+2. Definir el protocolo para recibir datos/fotos autorizados, revisión y aprobación escrita.
+3. Conseguir un número de WhatsApp autorizado cuando exista una inmobiliaria piloto.
+4. Solo con interés real, conseguir una etiqueta NFC de prueba y verificar que NFC y QR abren la misma URL.
+5. Registrar precio/alcance de piloto y mantenimiento antes de prometer una prestación.
+
+**P2 — Validación de negocio**
+- Hablar con prospectos, registrar objeciones y disposición a pagar. El objetivo inicial de tres inmobiliarias y 1–2 propiedades por inmobiliaria sigue siendo una meta, no un resultado.
+- No crear base de datos, panel, CRM ni sistema de analítica todavía.
+
+### 17.7 Siguiente paso concreto y criterio de finalización
+
+**Siguiente paso:** prueba manual del recorrido web en navegador de escritorio y teléfono, utilizando la landing pública y la ficha independiente.
+
+**Se considera finalizado cuando:** (a) ambos URLs cargan sin error; (b) la landing abre su demo integrada y permite regresar; (c) la ficha independiente carga y se adapta a móvil; (d) el CTA informa claramente que WhatsApp real está pendiente, sin simular una consulta exitosa; (e) no hay QR interno redundante; (f) se registra qué se probó y en qué dispositivo. Esto no certifica NFC físico ni autoriza aún una instalación en cliente.
+
+### 17.8 Balance de evolución y recomendación
+
+Desde la auditoría anterior, el proyecto avanzó en dos puntos verificables: se confirmó el deploy de producción más reciente y se corrigió el QR redundante en la ficha independiente. La base técnica está suficientemente formada para continuar con QA y preparación del piloto, pero no existe evidencia suficiente para declarar el producto listo para una instalación real.
+
+**Recomendación operativa:** congelar nuevas funcionalidades. Ejecutar ahora el QA público del recorrido web; después preparar una ficha real solo cuando una inmobiliaria aporte y apruebe sus datos. No comprar hardware en cantidad, contratar infraestructura adicional ni prometer resultados comerciales antes de validar el primer piloto.
+
