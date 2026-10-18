@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ficha de propiedad en venta.">
+  <title>{{TITULO}} | NexoSolutions</title>
+  <style>
+    :root{--ink:#17221f;--muted:#65716c;--paper:#f6f5f0;--surface:#fffefa;--line:#dfe4dc;--green:#153f32;--sand:#e9e5d9}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}a{color:inherit}.wrap{width:min(1040px,calc(100% - 28px));margin:auto}.top{padding:18px 0;border-bottom:1px solid var(--line);font-weight:800}.top small{display:block;color:var(--muted);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase}.layout{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;padding:28px 0 50px}.gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px}.photo{min-height:150px;border-radius:14px;background:#dce4d8;overflow:hidden}.photo:first-child{grid-column:1/-1;min-height:300px}.photo img{width:100%;height:100%;min-height:inherit;object-fit:cover;display:block}.placeholder{display:grid;place-items:center;color:#65716c;height:100%;min-height:inherit;padding:18px;text-align:center}.details{margin-top:26px}.details h2{font-size:1.45rem}.muted{color:var(--muted)}.panel{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px;align-self:start}.tag{display:inline-block;background:#e8f0e8;color:#315b45;border-radius:99px;padding:5px 10px;font-size:.72rem;font-weight:800;text-transform:uppercase}.panel h1{font-size:clamp(1.7rem,4vw,2.25rem);line-height:1.08;letter-spacing:-.04em;margin:14px 0 4px}.price{font-size:1.9rem;font-weight:850;margin:20px 0}.specs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:18px 0}.spec{background:var(--paper);border-radius:10px;padding:10px 5px;text-align:center}.spec strong,.spec span{display:block}.spec span{font-size:.75rem;color:var(--muted)}.button{display:block;background:var(--green);color:white;text-decoration:none;text-align:center;padding:14px;border-radius:999px;font-weight:800;margin-top:12px}.list{padding-left:19px}.section{border-top:1px solid var(--line);padding-top:14px;margin-top:18px}footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:.85rem}@media(max-width:760px){.layout{grid-template-columns:1fr;padding-top:16px}.panel{order:-1}.photo:first-child{min-height:230px}.photo{min-height:110px}}
+  </style>
+</head>
+<body>
+  <header class="wrap top">NexoSolutions <small>Ficha digital · Venta</small></header>
+  <main class="wrap">
+    <div class="layout">
+      <div>
+        <section class="gallery" aria-label="Fotos de la propiedad">
+          <div class="photo"><div class="placeholder">Agregar foto principal autorizada</div></div>
+          <div class="photo"><div class="placeholder">Foto 2</div></div>
+          <div class="photo"><div class="placeholder">Foto 3</div></div>
+        </section>
+        <section class="details">
+          <p class="muted">{{ZONA}}, {{CIUDAD}}</p>
+          <h2>Descripción de la propiedad</h2>
+          <p>{{DESCRIPCION}}</p>
+          <h2>Características y comodidades</h2>
+          <ul class="list"><li>{{CARACTERISTICA_1}}</li><li>{{CARACTERISTICA_2}}</li><li>{{CARACTERISTICA_3}}</li></ul>
+          <div class="section"><h2>Costos y condiciones</h2><p>{{GASTOS_COMUNES_E_IMPUESTOS}}</p><p>{{CONDICIONES_DE_VENTA_Y_PAGO}}</p></div>
+          <div class="section"><h2>Video o recorrido 360°</h2><p>{{URL_VIDEO_360_O_TEXTO_NO_DISPONIBLE}}</p></div>
+        </section>
+      </div>
+      <aside class="panel">
+        <span class="tag">En venta</span>
+        <h1>{{TITULO}}</h1>
+        <div class="muted">{{UBICACION_PUBLICA}}</div>
+        <div class="price">{{PRECIO_Y_MONEDA}}</div>
+        <div class="specs"><div class="spec"><strong>{{DORMITORIOS}}</strong><span>Dormitorios</span></div><div class="spec"><strong>{{BANOS}}</strong><span>Baños</span></div><div class="spec"><strong>{{M2_CONSTRUIDOS}}</strong><span>Construidos</span></div></div>
+        <p class="muted">Terreno: {{M2_TERRENO}} · Cochera: {{COCHERA}}</p>
+        <a class="button" href="https://wa.me/{{WHATSAPP_INTERNACIONAL_SIN_MAS}}?text={{MENSAJE_URL_ENCODED}}">Consultar por WhatsApp ↗</a>
+        <p class="muted" style="font-size:.82rem">Inmobiliaria: {{NOMBRE_INMOBILIARIA}} · {{REFERENCIA_PROPIEDAD}}</p>
+      </aside>
+    </div>
+  </main>
+  <footer class="wrap">© NexoSolutions · Información suministrada por la inmobiliaria.</footer>
+</body>
+</html>
