@@ -397,9 +397,9 @@ Para evitar que el proveedor genere un gasto ilimitado:
 - **D-017:** La cuota de mantenimiento debe cubrir infraestructura, almacenamiento/transferencia y soporte dentro de límites explícitos.
 
 
-## 17. Auditoría integral de estado — Constancia NS-AUD-2026-10-18-01
+## 17. Auditoría integral de estado — Constancia NS-AUD-2026-10-17-01
 
-**Fecha:** 18 de octubre de 2026 (Uruguay).  
+**Fecha:** 17 de octubre de 2026 (Uruguay).  
 **Alcance:** documento maestro, README, landing, ficha demo independiente, plantillas de venta/alquiler, HEAD de `main`, comparación de commits y despliegue de producción de Netlify.  
 **Método:** inspección de archivos reales y metadatos del proveedor. Esta auditoría no equivale a una prueba manual en un teléfono ni a una prueba física de NFC.
 
