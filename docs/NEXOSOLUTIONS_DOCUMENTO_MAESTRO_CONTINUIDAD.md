@@ -296,3 +296,102 @@ Revisar evidencia del piloto antes de invertir en panel, base de datos o automat
 Usar este documento como fuente principal de continuidad. Antes de volver a investigar un punto, comprobar primero este documento, los archivos relevantes del repositorio y los commits recientes. No repetir auditorías sin una pregunta concreta nueva o evidencia de cambio. Registrar decisiones nuevas en la sección 13 y actualizar el estado cuando un pendiente se verifique.
 
 **Próxima acción recomendada:** verificar el despliegue real de Netlify y ejecutar la Fase 1 antes de tocar el diseño o comprar hardware.
+
+
+## 15. Costos de infraestructura, despliegues y crecimiento
+
+Esta sección se agrega para evitar que la evolución a autogestión cree costos variables que NexoSolutions no pueda trasladar ni controlar. Los precios y límites de proveedores cambian: revisar sus páginas oficiales y el plan real de la cuenta antes de contratar o comprometer un precio al cliente.
+
+### 15.1 Netlify: distinguir edición de contenido y despliegue
+
+La ficha actual es HTML estático publicado en Netlify. En este enfoque, editar archivos y publicar una versión nueva suele generar un despliegue de producción. En los planes de créditos publicados por Netlify, cada despliegue de producción exitoso consume 15 créditos; las vistas previas y los despliegues de rama no consumen créditos. El plan Free publicado incluye 300 créditos al mes y se detiene al alcanzar el límite; Personal aparece a USD 9/mes con 1.000 créditos. Consultar siempre la tarifa actual y el tipo de plan de la cuenta.
+
+Referencia oficial: https://www.netlify.com/pricing/ y https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/how-credits-work/
+
+**Implicación de diseño:** si cada cliente modifica el HTML o un archivo del repositorio para cambiar precio, fotos o disponibilidad, puede disparar despliegues de producción y consumir créditos de la cuenta de NexoSolutions. No se debe entregar a los clientes acceso de escritura al repositorio como método normal de autogestión.
+
+### 15.2 Arquitectura recomendada por etapas
+
+**Etapa A — MVP gestionado estático**
+- Mantener las fichas estáticas y el proceso manual mientras se valida el servicio.
+- Agrupar cambios pequeños cuando sea razonable y publicar solo cuando estén aprobados.
+- No agregar backend ni base de datos solo por anticipación.
+- Registrar el costo y el tiempo de cada ficha/cambio para conocer el costo real del servicio.
+
+**Etapa B — autogestión sin despliegue por cada cambio**
+- Separar la aplicación de la información de cada propiedad.
+- La aplicación se despliega cuando cambia su código; los cambios de precio, texto, fotos o disponibilidad se guardan como datos y se muestran en tiempo de ejecución.
+- Guardar datos estructurados en PostgreSQL (por ejemplo, inmobiliarias, propiedades, usuarios, estado de publicación y referencias a imágenes).
+- Guardar fotografías y archivos en almacenamiento de objetos/medios, no dentro del repositorio Git ni como grandes blobs en PostgreSQL. En la base de datos se guarda la URL/ruta, metadatos y relación con la propiedad.
+- Añadir autenticación y autorización por inmobiliaria antes de permitir autogestión. Una inmobiliaria no debe poder editar las propiedades de otra.
+- Limitar tamaño/tipo de archivos, cantidad de fotos, cuota de almacenamiento y permisos de eliminación.
+- No adoptar esta etapa hasta validar que los clientes realmente necesitan autogestión y que la cuota recurrente puede cubrir la infraestructura y el soporte.
+
+Un CMS conectado a Git puede seguir generando un despliegue por cada cambio; no asumir que “tener un panel” resuelve automáticamente el costo de deploy. La condición de aceptación de la futura arquitectura será que una edición ordinaria de contenido no requiera desplegar el sitio de producción.
+
+### 15.3 Papel de cada servicio
+
+- **GitHub:** repositorio del código, plantillas, documentación y control de versiones. No debe ser el almacén de fotos comerciales ni de datos de clientes.
+- **Netlify:** alojamiento estático/CDN y publicación de la versión web durante el MVP. Si se mantiene en la arquitectura futura, presupuestar créditos por despliegues, solicitudes, transferencia y cualquier cómputo usado.
+- **Render:** opción candidata para alojar una API/backend y PostgreSQL gestionado cuando se necesite autogestión. No es obligatorio incorporarlo en el MVP estático.
+- **Almacenamiento de objetos/medios:** servicio separado para fotografías y archivos. Evaluar precio por GB almacenado, transferencia/egreso, operaciones, transformaciones de imágenes y backups.
+- **Backups:** política independiente del proveedor principal; verificar restauración, no solo que exista una opción de backup.
+
+### 15.4 Render PostgreSQL y protección de datos
+
+La documentación oficial de Render indica que su PostgreSQL gratuito tiene capacidad de 1 GB, expira a los 30 días y no incluye backups administrados ni recuperación PITR. Las bases de datos pagas reciben backups continuos con recuperación a un punto en el tiempo; la ventana indicada es de 3 días en Hobby y 7 días en Pro o superior. Render cobra el almacenamiento de PostgreSQL por separado según su página de precios y el plan de cómputo.
+
+Referencias oficiales:
+- https://render.com/docs/free
+- https://render.com/docs/postgresql-backups
+- https://render.com/docs/postgresql
+- https://render.com/pricing
+
+**Regla operativa:** nunca usar una base gratuita temporal como única copia de datos de clientes. Para datos de producción, elegir un plan vigente con backup y definir además una exportación independiente periódica, acceso restringido y una prueba de restauración. Los backups del proveedor no reemplazan una estrategia propia de recuperación.
+
+### 15.5 Crecimiento del almacenamiento
+
+Los gigabytes se refieren al volumen ocupado; también pueden existir cargos por transferencia, solicitudes, procesamiento y backups. Fotos y videos suelen crecer mucho más rápido que los datos de texto de una ficha.
+
+Registrar por inmobiliaria:
+- cantidad de fichas activas;
+- cantidad de imágenes por ficha y tamaño medio;
+- GB almacenados y GB transferidos al mes;
+- solicitudes/visitas aproximadas;
+- cantidad de ediciones/publicaciones;
+- costo real de proveedor y tiempo de soporte.
+
+Aplicar límites explícitos: tipos y tamaño máximo de archivo, número de fotos por ficha incluido en el plan, política de archivos originales, limpieza de contenido retirado y retención de copias. No cobrar por GB hasta definir medición y reglas transparentes; inicialmente puede ser más sencillo incluir una cuota razonable y cobrar por ampliaciones previamente acordadas.
+
+### 15.6 GitHub: qué cuesta y qué no
+
+El repositorio Git no es lo mismo que el hosting, la base de datos o el almacenamiento de fotos. GitHub ofrece repositorios públicos y privados en sus planes gratuitos; las funciones de uso medido, como GitHub Actions, Git LFS y Packages, tienen cuotas y reglas de facturación propias. GitHub Actions es gratuito para ejecutores estándar en repositorios públicos, pero los artefactos/almacenamiento y otros productos tienen límites según el plan.
+
+Referencias oficiales:
+- https://github.com/pricing
+- https://docs.github.com/es/billing/reference/product-usage-included
+- https://docs.github.com/es/actions/concepts/billing-and-usage
+
+Para el repositorio actual, compuesto principalmente por HTML, CSS, JavaScript y documentación, no se prevé un costo por el simple hecho de mantener el código en GitHub Free. Esto no significa que todo producto de GitHub sea gratuito ni que Netlify/Render/almacenamiento sean gratuitos. Evitar subir fotografías de propiedades, videos, backups o archivos grandes al historial Git.
+
+### 15.7 Principio para fijar el mantenimiento
+
+El precio recurrente debe cubrir, como mínimo, los costos asignables de infraestructura, almacenamiento y transferencia, copias de seguridad cuando correspondan, mantenimiento técnico y tiempo de soporte, más margen. No fijar una cuota antes de conocer estos costos y el alcance incluido.
+
+Para evitar que el proveedor genere un gasto ilimitado:
+1. mantener recargas automáticas desactivadas hasta comprender el consumo, cuando el plan lo permita;
+2. establecer presupuestos/alertas y revisar el uso mensualmente;
+3. definir cuotas por cliente y reglas para ampliaciones;
+4. no prometer almacenamiento, tráfico o cambios ilimitados;
+5. documentar un procedimiento de exportación y baja;
+6. revisar precios oficiales antes de cada cambio de arquitectura.
+
+## 16. Decisiones nuevas sobre infraestructura
+
+- **D-011:** No entregar a clientes acceso de escritura al repositorio como mecanismo de autogestión.
+- **D-012:** En la futura autogestión, una edición normal de contenido debe actualizar datos sin requerir un deploy de producción.
+- **D-013:** Mantener el MVP estático y sin base de datos mientras se valida el servicio.
+- **D-014:** Render PostgreSQL es una opción futura para backend/datos estructurados, no una contratación inmediata.
+- **D-015:** Fotografías y videos se almacenarán fuera de Git y, preferentemente, fuera de PostgreSQL, en almacenamiento de medios/objetos con cuotas y costos medibles.
+- **D-016:** Ninguna base gratuita temporal será la única copia de datos de producción; se requieren backups y una prueba de restauración.
+- **D-017:** La cuota de mantenimiento debe cubrir infraestructura, almacenamiento/transferencia y soporte dentro de límites explícitos.
